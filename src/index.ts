@@ -247,6 +247,17 @@ async function runHTTP() {
     res.json({ status: "ok", episodes: episodes.length });
   });
 
+  // Stats endpoint - get usage count
+  app.get("/stats", async (_req: Request, res: Response) => {
+    try {
+      const response = await fetch("https://api.countapi.xyz/get/lenny-mcp/sessions");
+      const data = await response.json() as { value: number };
+      res.json({ sessions: data.value || 0 });
+    } catch {
+      res.json({ sessions: "unavailable" });
+    }
+  });
+
   app.get("/", (_req: Request, res: Response) => {
     res.json({
       status: "ok",
@@ -292,6 +303,9 @@ async function runHTTP() {
     if (transport.sessionId && !transports.has(transport.sessionId)) {
       transports.set(transport.sessionId, transport);
       console.error(`New session stored: ${transport.sessionId}`);
+
+      // Track usage (fire and forget)
+      fetch("https://api.countapi.xyz/hit/lenny-mcp/sessions").catch(() => {});
     }
   });
 
