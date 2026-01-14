@@ -48,13 +48,13 @@ Want to run your own instance?
 
 ### Deploy to Render (One Click)
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/YOUR_USERNAME/lenny-mcp)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/akshayvkt/lenny-mcp)
 
 ### Run Locally
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/lenny-mcp
+git clone https://github.com/akshayvkt/lenny-mcp
 cd lenny-mcp
 
 # Install and build
