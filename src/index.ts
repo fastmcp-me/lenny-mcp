@@ -9,6 +9,8 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import express, { Request, Response } from "express";
 import { randomUUID } from "crypto";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 import { loadTranscripts, downloadTranscripts } from "./loader.js";
 import {
@@ -20,6 +22,10 @@ import {
 
 const PORT = parseInt(process.env.PORT || "3000", 10);
 const MODE = process.env.MCP_MODE || "stdio"; // "stdio" for local, "sse" for remote
+
+// Get the directory path for serving static files
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Create the MCP server
 function createMCPServer() {
@@ -224,6 +230,9 @@ async function runHTTP() {
 
   const app = express();
   app.use(express.json());
+
+  // Serve static files (icon, etc.)
+  app.use(express.static(join(__dirname, "..", "public")));
 
   // Track transports by session ID
   const transports = new Map<string, StreamableHTTPServerTransport>();
