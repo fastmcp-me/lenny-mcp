@@ -12,12 +12,18 @@ Search 284 episodes of [Lenny's Podcast](https://www.lennysnewsletter.com/podcas
 4. Click **Add** and enable the connector
 5. Start asking questions!
 
+https://github.com/user-attachments/assets/2865089c-027b-46f2-9301-82aeb3e5c16c
+
+
 ### Option 2: ChatGPT
 
 1. Go to **Settings → Apps → Enable Developer Mode**
 2. Click **Create App**
 3. Add a name and paste the URL: `https://lenny-mcp.onrender.com/mcp`
 4. Save and start using it!
+
+https://github.com/user-attachments/assets/b494f1d8-6091-4e14-adb5-82bd3f02958f
+
 
 ### Option 3: Claude Code CLI
 
