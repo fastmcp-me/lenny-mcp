@@ -4,20 +4,18 @@ Search 284 episodes of [Lenny's Podcast](https://www.lennysnewsletter.com/podcas
 
 ## Quick Start
 
-### Option 1: Claude Desktop / Cowork (Easiest)
+### Option 1: Claude Desktop / Claude.ai (Easiest)
 
-1. Open Claude Desktop or Cowork
+1. Open Claude Desktop or go to [claude.ai](https://claude.ai)
 2. Go to **Settings → Connectors → Add custom connector**
-3. Enter:
-   - **Name:** `Lenny's Podcast`
-   - **URL:** `https://lenny-mcp.onrender.com/sse`
-4. Click **Add**
+3. Enter the URL: `https://lenny-mcp.onrender.com/mcp`
+4. Click **Add** and enable the connector
 5. Start asking questions!
 
 ### Option 2: Claude Code CLI
 
 ```bash
-claude mcp add lenny-transcripts --url https://lenny-mcp.onrender.com/sse
+claude mcp add -t http -s user lenny-transcripts https://lenny-mcp.onrender.com/mcp
 ```
 
 Then restart Claude Code.
@@ -46,9 +44,11 @@ Once connected, try asking Claude things like:
 
 Want to run your own instance?
 
-### Deploy to Render (One Click)
+### Deploy to Render
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/akshayvkt/lenny-mcp)
+
+Set the environment variable `MCP_MODE=sse` in Render settings.
 
 ### Run Locally
 
@@ -61,23 +61,27 @@ cd lenny-mcp
 npm install
 npm run build
 
-# Run in SSE mode (for remote connections)
-npm run start:sse
+# Run in HTTP mode (for remote connections)
+MCP_MODE=sse npm start
 
 # Or run in stdio mode (for local Claude Code)
 npm start
 ```
 
-For local Claude Code usage with your own transcripts:
+### Local Claude Code (with your own transcripts)
 
 ```bash
-# Download transcripts from Lenny's Dropbox
-# Set the path
-export LENNY_TRANSCRIPTS_PATH="/path/to/your/transcripts"
+# Download transcripts from Lenny's Dropbox link
+# Set the path to where you downloaded them
+export LENNY_TRANSCRIPTS_PATH="/path/to/Lenny's Podcast Transcripts Archive [public]"
 
-# Add to Claude Code
+# Add to Claude Code as a local server
 claude mcp add lenny-transcripts -- node /path/to/lenny-mcp/dist/index.js
 ```
+
+## How It Works
+
+The server downloads Lenny's publicly shared transcripts from Dropbox on startup, indexes them using FlexSearch for fast keyword search, and exposes three MCP tools that Claude can use to search and retrieve content.
 
 ## Credits
 
