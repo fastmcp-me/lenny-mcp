@@ -24,9 +24,11 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
+    "express": "^5.2.1",
     "flexsearch": "^0.7.43"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0"
   },

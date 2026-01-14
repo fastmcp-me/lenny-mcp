@@ -7,7 +7,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { createServer, IncomingMessage, ServerResponse } from "http";
+import express, { Request, Response } from "express";
 
 import { loadTranscripts, downloadTranscripts } from "./loader.js";
 import {
@@ -221,65 +221,63 @@ async function runSSE() {
   const episodes = await loadTranscripts();
   initializeIndex(episodes);
 
-  // Track active transports for cleanup
-  const transports = new Map<string, SSEServerTransport>();
+  const app = express();
+  app.use(express.json());
 
-  const httpServer = createServer(
-    async (req: IncomingMessage, res: ServerResponse) => {
-      const url = new URL(req.url || "", `http://localhost:${PORT}`);
+  // Track active transports by sessionId
+  const transports: { [sessionId: string]: SSEServerTransport } = {};
 
-      // Health check endpoint
-      if (url.pathname === "/health" || url.pathname === "/") {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ status: "ok", episodes: episodes.length }));
-        return;
+  // Health check endpoint
+  app.get("/health", (_req: Request, res: Response) => {
+    res.json({ status: "ok", episodes: episodes.length });
+  });
+
+  app.get("/", (_req: Request, res: Response) => {
+    res.json({
+      status: "ok",
+      episodes: episodes.length,
+      endpoints: {
+        sse: "/sse",
+        messages: "/messages",
+        health: "/health"
       }
+    });
+  });
 
-      // SSE endpoint
-      if (url.pathname === "/sse") {
-        console.error(`New SSE connection from ${req.socket.remoteAddress}`);
+  // SSE endpoint - clients connect here
+  app.get("/sse", async (_req: Request, res: Response) => {
+    console.error(`New SSE connection from ${_req.ip}`);
 
-        const transport = new SSEServerTransport("/message", res);
-        const sessionId = crypto.randomUUID();
-        transports.set(sessionId, transport);
+    const transport = new SSEServerTransport("/messages", res);
+    const sessionId = transport.sessionId;
+    transports[sessionId] = transport;
 
-        const server = createMCPServer();
+    console.error(`Session created: ${sessionId}`);
 
-        // Clean up on disconnect
-        res.on("close", () => {
-          console.error(`SSE connection closed: ${sessionId}`);
-          transports.delete(sessionId);
-        });
+    res.on("close", () => {
+      console.error(`SSE connection closed: ${sessionId}`);
+      delete transports[sessionId];
+    });
 
-        await server.connect(transport);
-        return;
-      }
+    const server = createMCPServer();
+    await server.connect(transport);
+  });
 
-      // Message endpoint for SSE
-      if (url.pathname === "/message" && req.method === "POST") {
-        let body = "";
-        req.on("data", (chunk) => (body += chunk));
-        req.on("end", async () => {
-          try {
-            // Find the transport and handle the message
-            // The SSE transport handles this internally
-            res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ ok: true }));
-          } catch (error) {
-            res.writeHead(500, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ error: "Failed to process message" }));
-          }
-        });
-        return;
-      }
+  // Messages endpoint - clients POST messages here
+  app.post("/messages", async (req: Request, res: Response) => {
+    const sessionId = req.query.sessionId as string;
+    console.error(`Message received for session: ${sessionId}`);
 
-      // 404 for unknown routes
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Not found" }));
+    const transport = transports[sessionId];
+    if (transport) {
+      await transport.handlePostMessage(req, res);
+    } else {
+      console.error(`No transport found for session: ${sessionId}`);
+      res.status(400).json({ error: "No transport found for sessionId" });
     }
-  );
+  });
 
-  httpServer.listen(PORT, () => {
+  app.listen(PORT, () => {
     console.error(`MCP Server listening on http://localhost:${PORT}`);
     console.error(`SSE endpoint: http://localhost:${PORT}/sse`);
   });
