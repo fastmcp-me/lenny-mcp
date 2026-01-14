@@ -47,45 +47,6 @@ Once connected, try asking Claude things like:
 | `get_episode` | Get full transcript for a specific guest |
 | `list_episodes` | List all available episodes |
 
-## Self-Hosting
-
-Want to run your own instance?
-
-### Deploy to Render
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/akshayvkt/lenny-mcp)
-
-Set the environment variable `MCP_MODE=sse` in Render settings.
-
-### Run Locally
-
-```bash
-# Clone the repo
-git clone https://github.com/akshayvkt/lenny-mcp
-cd lenny-mcp
-
-# Install and build
-npm install
-npm run build
-
-# Run in HTTP mode (for remote connections)
-MCP_MODE=sse npm start
-
-# Or run in stdio mode (for local Claude Code)
-npm start
-```
-
-### Local Claude Code (with your own transcripts)
-
-```bash
-# Download transcripts from Lenny's Dropbox link
-# Set the path to where you downloaded them
-export LENNY_TRANSCRIPTS_PATH="/path/to/Lenny's Podcast Transcripts Archive [public]"
-
-# Add to Claude Code as a local server
-claude mcp add lenny-transcripts -- node /path/to/lenny-mcp/dist/index.js
-```
-
 ## How It Works
 
 The server downloads Lenny's publicly shared transcripts from Dropbox on startup, indexes them using FlexSearch for fast keyword search, and exposes three MCP tools that Claude can use to search and retrieve content.
