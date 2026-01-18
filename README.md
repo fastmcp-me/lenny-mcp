@@ -1,3 +1,10 @@
+[![Add to Cursor](https://fastmcp.me/badges/cursor_dark.svg)](https://fastmcp.me/MCP/Details/1667/lennys-podcast)
+[![Add to VS Code](https://fastmcp.me/badges/vscode_dark.svg)](https://fastmcp.me/MCP/Details/1667/lennys-podcast)
+[![Add to Claude](https://fastmcp.me/badges/claude_dark.svg)](https://fastmcp.me/MCP/Details/1667/lennys-podcast)
+[![Add to ChatGPT](https://fastmcp.me/badges/chatgpt_dark.svg)](https://fastmcp.me/MCP/Details/1667/lennys-podcast)
+[![Add to Codex](https://fastmcp.me/badges/codex_dark.svg)](https://fastmcp.me/MCP/Details/1667/lennys-podcast)
+[![Add to Gemini](https://fastmcp.me/badges/gemini_dark.svg)](https://fastmcp.me/MCP/Details/1667/lennys-podcast)
+
 # Lenny's Podcast MCP
 
 Search 284 episodes of [Lenny's Podcast](https://www.lennysnewsletter.com/podcast) transcripts directly from Claude. Get instant access to product wisdom from guests like Shreyas Doshi, Julie Zhuo, Brian Chesky, and hundreds more.
